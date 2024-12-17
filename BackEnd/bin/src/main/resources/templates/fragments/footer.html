@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<!-- Template Main JS File -->
+  <script th:src="@{/assets/js/main.js}"></script>
+  <script th:src="@{/assets/js/key.js}"></script>
+
+  <!-- The Modal -->
+  <!-- 로그인 modal start -->
+  <div class="modal fade sign" id="login-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">
+            <span class="text-info">로그인</span>
+          </h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form method="POST" action="" id="login-form">
+            <div class="row mb-3 justify-content-start">
+              <div class="col">
+                <input type="text" class="form-control" id="login-id" name="userId" placeholder="ID" />
+              </div>
+            </div>
+            <div class="row mb-3 justify-content-start">
+              <div class="col">
+                <input type="password" class="form-control" id="login-password" name="userPw"
+                  placeholder='password' />
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="btn-login" class="btn btn-primary btn-sm" data-bs-backdrop="false">
+            로그인
+          </button>
+          <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">
+            취소
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 로그인 modal end -->
+
+  <!-- 회원가입 modal start -->
+  <div class="modal fade sign" id="signup-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">
+            <span class="text-info">회원가입</span>
+          </h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form method="POST" action="" id="signup-form">
+            <div class="row mb-2">
+              <label for="signup-id" class='mb-1'>아이디</label>
+              <div class="col">
+                <input type="text" class="form-control" id="signup-id" name="userId" placeholder="ID" />
+              </div>
+              <div class="col-auto">
+                <button type='button' class='btn btn-outline-secondary btn-sm' id="signup-id-check">중복 확인</button>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <label for="signup-password" class='mb-1 mt-2'>비밀번호</label>
+              <div class="col-10">
+                <input type="password" class="form-control" id="signup-password" name="userPw"
+                  placeholder='Password' />
+              </div>
+              <div class="col-auto">
+                <i class="bi-x pwcheck-icon justify-content-center" id="signup-password-icon" style='display:none'></i>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <label for="signup-password" class='mb-1'>비밀번호 확인</label>
+              <div class="col-10">
+                <input type="password" class="form-control" id="signup-password-check" name="signup-password-check"
+                  placeholder='password' />
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-10">
+                <span id="password-check-msg" class="ms-2" style='display: none'></span>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <label for="signup-name">이름</label>
+              <div class="col-10">
+                <input type="text" class="form-control" id="signup-name" name="name" placeholder='Name' />
+              </div>
+            </div>
+            <div class="row mb-2">
+              <label for="signup-email" class='mb-1'>이메일</label>
+              <div class="input-group mb-3 col-10">
+                <input type="text" class="form-control" id="signup-emailid" name="emailId" placeholder="Username"
+                  aria-label="Username">
+                <span class="input-group-text">@</span>
+                <input type="text" class="form-control" id="signup-emaildomain" name="emailDomain"
+                  placeholder="Server" aria-label="Server">
+              </div>
+            </div>
+            <div class="row mb-2">
+              <label for="signup-name" class='mb-1'>지역</label>
+              <div class="col-5">
+                <select id="select-sido" name="sido" class="form-select me-2">
+                  <option value="0" selected>시/도 선택</option>
+                </select>
+              </div>
+              <div class="col-5">
+                <select id="select-gugun" name="select-gugun" class="form-select me-2">
+                  <option value="0" selected>시/군/구 선택</option>
+                </select>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="btn-signup" class="btn btn-primary btn-sm">
+            회원가입
+          </button>
+          <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">
+            취소
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 회원가입 modal end -->
+
+  <script th:src="@{/assets/js/sign.js}"></script>
+  <script th:src="@{/assets/js/login.js}"></script>
+  
+</html>

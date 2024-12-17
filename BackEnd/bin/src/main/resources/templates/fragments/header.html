@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<div
+	class="container-fluid container-xl d-flex align-items-center justify-content-between">
+
+	<a href="/" class="logo d-flex align-items-center"> <!-- <img src="assets/img/logo.png" alt=""> -->
+	</a> <i class="mobile-nav-toggle mobile-nav-show bi bi-list"></i> <i
+		class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
+	<nav id="navbar" class="navbar">
+		<ul class='menu'>
+			<li><a href="/">Home</a></li>
+			<li><a href="/tour" style='font-weight: bold;'>관광정보</a></li>
+			<li><a href="/notice/list">공지사항</a></li>
+			<li><a href="/board/list">게시판</a></li>
+			<li><a href="/tour/myplan">나만의 여행</a></li>
+			<th:block th:if="${session.userInfo == null}">
+			<li><a data-bs-toggle="modal" data-bs-target="#login-modal"
+				href="#" id='loginNav' style='display: inline;'>로그인</a></li>
+			<li><a data-bs-toggle="modal" data-bs-target="#signup-modal"
+				href="#" id='signNav' style='font-weight: bold; display: inline;'>회원가입</a></li>
+			</th:block>
+			<th:block th:unless="${session.userInfo == null}">
+			<li><a href="/user/logout" id='logoutNavLi'>로그아웃</a></li>
+			<li><a href="/user/info" id='mypageNavLi'>마이페이지</a></li>
+			</th:block>
+<!-- 			<li id='loginNavLi' style='display: inline;'><a data-bs-toggle="modal" data-bs-target="#login-modal" -->
+<!-- 				href="#">로그인</a></li> -->
+<!-- 			<li id='logoutNavLi' style='display: none;'><a href="/user/logout">로그아웃</a></li> -->
+<!-- 			<li id='signNavLi' style='font-weight: bold; display: inline;'><a data-bs-toggle="modal" data-bs-target="#signup-modal" -->
+<!-- 				href="#">회원가입</a></li> -->
+<!-- 			<li id='mypageNavLi' style='display: none;'><a href="/user/myPage">마이페이지</a></li> -->
+		</ul>
+	</nav>
+	<!-- .navbar -->
+
+</div>
+
+<script th:inline="javascript">
+		var msg = [[${msg}]];
+		if (msg != null && msg != ""){
+			alert(msg);
+		}
+	</script>
+
+</html>
+<!-- End Header -->

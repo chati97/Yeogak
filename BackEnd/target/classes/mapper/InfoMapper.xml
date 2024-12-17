@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.ssafy.enjoytrip.tour.model.mapper.InfoMapper">
+	<resultMap type="infoDto" id="info">
+		<result column="content_id" property="contentId" />
+		<result column="title" property="title" />
+		<result column="addr1" property="addr1" />
+		<result column="addr2" property="addr2" />
+		<result column="tel" property="tel" />
+		<result column="first_image" property="firstImage" />
+		<result column="latitude" property="latitude" />
+		<result column="longitude" property="longitude" />
+		<result column="homepage" property="homepage" />
+		<result column="overview" property="overview" />
+		<result column="avg" property="ratingAvg" />
+	</resultMap>
+
+	<resultMap type="reviewDto" id="review">
+		<result column="id" property="id" />
+		<result column="user_id" property="userId" />
+		<result column="birth_year" property="userBirthYear" />
+		<result column="sex" property="userSex" />
+		<result column="nickname" property="nickname" />
+		<result column="attraction_id" property="attractionId" />
+		<result column="attraction_title" property="attractionTitle" />
+		<result column="title" property="title" />
+		<result column="content" property="content" />
+		<result column="rating" property="rating" />
+		<result column="register_time" property="registerTime" />
+		<result column="picture" property="picture" />
+		<result column="helpful_count" property="helpfulCount" />
+		<result column="helpful_avg" property="helpfulAvg" />
+	</resultMap>
+
+	<!-- 조건에 맞는 모든 관광지 출력 -->
+	<select id="listInfo" parameterType="map" resultMap="info">
+		select i.content_id content_id, title, addr1, addr2, tel, first_image,
+		latitude, longitude, homepage, overview, ifnull(`rating`, 0) `avg`
+		from attraction_info i join attraction_description d
+		using(content_id)
+		left join (
+		select attraction_id, avg(rating) `rating`
+		from Attraction_Review
+		group by attraction_id
+		) r on i.content_id = r.attraction_id
+		where 1=1
+		<if test="sidoCode != 0">
+			and i.sido_code=#{sidoCode}
+		</if>
+		<if test="gugunCode != 0">
+			and i.gugun_code=#{gugunCode}
+		</if>
+		<if test="word != null">
+			and `title` like concat('%', #{word}, '%')
+		</if>
+		<if test="selectedAttTypes != null">
+			and i.content_type_id in (
+			<foreach collection="selectedAttTypes" item="type"
+				separator=" , ">
+				#{type}
+			</foreach>
+			)
+		</if>
+		order by avg desc
+		limit #{start}, #{spp}
+	</select>
+
+	<!-- 리뷰 & 별점 남기기 -->
+	<insert id="insertReview" parameterType="map">
+		insert into
+		Attraction_Review (`user_id`, `attraction_id`, `title`, `content`,
+		`rating`)
+		values(#{userId}, #{attractionId}, #{title}, #{content},
+		#{rating})
+	</insert>
+
+	<!-- 해당 유저의 해당 장소에 대한 리뷰 조회 -->
+	<select id="getReviewByUser" parameterType="map"
+		resultMap="review">
+		select `id`, ar.user_id userId, attraction_id, title,
+		content, rating, ar.register_time register_time, u.nickname
+		from
+		Attraction_Review ar
+		join `User` u
+		on ar.user_id = u.user_id
+		where ar.user_id=#{userId} and
+		attraction_id=#{attractionId}
+	</select>
+
+	<!-- 해당 장소 정보 조회 -->
+	<select id="viewPlaceInfo" parameterType="int" resultMap="info">
+		select
+		i.content_id content_id, title, addr1, addr2, tel, first_image,
+		latitude, longitude, homepage, overview, ifnull(`rating`, 0) `avg`
+		from attraction_info i join attraction_description d
+		using(content_id)
+		left join (
+		select attraction_id, avg(rating) `rating`
+		from Attraction_Review
+		group by attraction_id
+		) r on i.content_id = r.attraction_id
+		where content_id=#{contentId}
+	</select>
+
+	<!-- 해당 장소 리뷰 전체 조회 -->
+	<select id="getReviewList" parameterType="map"
+		resultMap="review">
+		select `id`, ar.user_id userId, attraction_id, title,
+		content, rating, ar.register_time register_time, u.nickname,
+		birth_year, sex
+		from Attraction_Review ar
+		join `User` u
+		on ar.user_id = u.user_id
+		where attraction_id=#{attractionId}
+	</select>
+
+	<!-- 최근 리뷰 10개 조회 -->
+	<select id="listReviewRecent" resultMap="review">
+		select ar.*, nickname
+		from Attraction_Review ar
+			join `User` u
+			on ar.user_id = u.user_id
+			join `attraction_info` i
+			on ar.attraction_id = i.content_id
+		where length(ar.title)>0 and
+			length(ar.content)>0
+		order by ar.register_time desc
+		limit 10;
+	</select>
+
+	<!-- 리뷰 수정 -->
+	<update id="updateReview" parameterType="map">
+		update Attraction_Review
+		set `title`=#{title}, `content`=#{content}, `rating`=#{rating}
+		where
+		`id`=#{id}
+	</update>
+
+	<!-- 리뷰 삭제 -->
+	<delete id="deleteReview" parameterType="int">
+		delete from
+		Attraction_Review
+		where id=#{id}
+	</delete>
+</mapper>

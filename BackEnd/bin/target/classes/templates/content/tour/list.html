@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/default_layout}">
+
+
+<div layout:fragment="content" class="content">
+	<main id="main">
+		<div id="hero-carousel" class="carousel slide" data-bs-ride="carousel"
+			data-bs-interval="5000">
+			<div class="carousel-item active"
+				style="background-image: url(/assets/img/service1.jpg); background-size: cover;">
+				<div class='container position-relative algin-items-center'
+					style='margin: 5% auto 10% auto;'>
+					<div id="map" style="width: 100%; height: 650px;"></div>
+					<form id="searchForm" class="d-flex my-3" onsubmit="return false;"
+						role="search" method="POST" action="">
+						<select id="search-area" name="sidoCode" class="form-select me-2">
+							<!--             <option value="0" selected>검색 할 지역 선택</option> -->
+							<!--             <option value="1">서울</option> -->
+							<!--             <option value="2">인천</option> -->
+							<!--             <option value="3">대전</option> -->
+							<!--             <option value="4">대구</option> -->
+							<!--             <option value="5">광주</option> -->
+							<!--             <option value="6">부산</option> -->
+							<!--             <option value="7">울산</option> -->
+							<!--             <option value="8">세종특별자치시</option> -->
+							<!--             <option value="31">경기도</option> -->
+							<!--             <option value="32">강원도</option> -->
+							<!--             <option value="33">충청북도</option> -->
+							<!--             <option value="34">충청남도</option> -->
+							<!--             <option value="35">경상북도</option> -->
+							<!--             <option value="36">경상남도</option> -->
+							<!--             <option value="37">전라북도</option> -->
+							<!--             <option value="38">전라남도</option> -->
+							<!--             <option value="39">제주도</option> -->
+						</select>
+						<div class="container card mx-2" align="center">
+							<table>
+								<tr>
+									<td><div>
+											<input type="checkbox" id="acttraction" name="attractionType"
+												value="12" /> <label for="acttraction">관광지</label>
+										</div></td>
+									<td><div>
+											<input type="checkbox" id="culture" name="attractionType"
+												value="14" /> <label for="culture">문화시설</label>
+										</div></td>
+								</tr>
+								<tr>
+									<td><div>
+											<input type="checkbox" id="festival" name="attractionType"
+												value="15" /> <label for="festival">축제공연행사</label>
+										</div></td>
+									<td><div>
+											<input type="checkbox" id="course" name="attractionType"
+												value="25" /> <label for="course">여행코스</label>
+										</div></td>
+								</tr>
+								<tr>
+									<td><div>
+											<input type="checkbox" id="leiports" name="attractionType"
+												value="28" /> <label for="leiports">레포츠</label>
+										</div></td>
+									<td><div>
+											<input type="checkbox" id="lodgment" name="attractionType"
+												value="32" /> <label for="lodgment">숙박</label>
+										</div></td>
+								</tr>
+								<tr>
+									<td><div>
+											<input type="checkbox" id="shopping" name="attractionType"
+												value="38" /> <label for="shopping">쇼핑</label>
+										</div></td>
+									<td><div>
+											<input type="checkbox" id="restaurant" name="attractionType"
+												value="39" /> <label for="restaurant">음식점</label>
+										</div></td>
+								</tr>
+							</table>
+						</div>
+
+						<input id="search-keyword" name="title" class="form-control me-2"
+							type="search" placeholder="검색어" aria-label="검색어" /> <input
+							type="hidden" name="lat" id="lat"> <input type="hidden"
+							name="lon" id="lon">
+						<button id="btn-search" class="btn btn-success" type="button">검색</button>
+					</form>
+					<div id="map-table-div">
+						<table id="resultTable" class="table table-striped">
+							<thead style='background-color: aliceblue;'>
+								<tr>
+									<th>관광지명</th>
+									<th>사진</th>
+									<th>주소</th>
+									<th>전화번호</th>
+									<th style="display: none">위도</th>
+									<th style="display: none">경도</th>
+								</tr>
+							</thead>
+							<tbody id="resultTableBody"
+								style='background-color: aliceblue; font-size: 20px; height: 50px;'>
+								<!--        		<c:forEach var="mapInfo" items="${mapList}"> -->
+								<!--               <tr style="width:300px; height:200px;" class="text-center" onClick='moveCenter(${mapInfo.latitude}, ${mapInfo.longitude})'> -->
+								<!--                 <td class="text-start"> -->
+								<!--                     ${mapInfo.title} -->
+								<!--                 </td> -->
+								<!--                 <td class="text-start"> -->
+								<!--                 	<img src=${mapInfo.image} width=100px height=100px> -->
+								<!--                 </td> -->
+								<!--                 <td>${mapInfo.description} -->
+								<!--                 </td> -->
+								<!--                 <td style="display: none;">${mapInfo.latitude }</td> -->
+								<!--                 <td style="display: none;">${mapInfo.longitude }</td> -->
+
+								<!--               </tr> -->
+								<!-- 			</c:forEach>   -->
+							</tbody>
+
+						</table>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<!-- Template Main JS File -->
+	<script>
+  	let root = "";
+ 	// 시/도 리스트 출력
+    fetch(`/tour/sido`)
+      .then((response) => response.json())
+      .then((data) => makeSidoList(data));
+ 	
+ 	function makeSidoList(sidos){
+  	  let tbody = `<option value="0" selected>검색 할 지역 선택</option>`;
+  	  sidos.forEach(function (data){
+  		  tbody += `
+  			  <option value="${data.sidoCode}">${data.sidoName}</option>
+  		  `;
+  	  })
+  	  document.querySelector('#search-area').innerHTML = tbody;
+    }
+ 	
+ 	// 검색 클릭시 비동기로 검색결과 가져오기
+ 	document.querySelector('#btn-search').addEventListener("click", function(){
+ 		let types = new Array();
+ 		let cnt = 0;
+ 		let tempType = document.getElementsByName('attractionType');
+ 		console.log(tempType.length);
+ 		for(let i = 0; i < tempType.length; i++)
+ 		{
+ 			if (tempType[i].checked){
+ 				console.log(tempType[i].value);
+ 				types[cnt] = tempType[i].value;
+ 				cnt++;
+ 			}
+ 		}
+ 		let conditionInfo;
+ 		if (cnt == 0){
+ 			conditionInfo = {
+				sidoCode: document.querySelector("#search-area").value,
+	 			word: document.querySelector("#search-keyword").value	
+ 			};
+ 		} else {
+ 			conditionInfo = {
+	 			sidoCode: document.querySelector("#search-area").value,
+	 			word: document.querySelector("#search-keyword").value,
+	 			attractionType: types
+ 		 	};
+ 		}
+ 		
+ 		let config = {
+ 		          method: "POST",
+ 		          headers: {
+ 		            "Content-Type": "application/json",
+ 		          },
+ 		          body: JSON.stringify(conditionInfo),
+ 		};
+ 		fetch(`/tour`, config)
+        .then((response) => response.json())
+        .then((data) => makeList(data));
+ 	});
+ 	
+ 	function makeList(infos){
+ 		console.log("성공");
+ 		let tbody=``;
+ 		infos.forEach(function (mapInfo){
+ 			console.log(mapInfo);
+ 			tbody += `
+ 				<tr class="info" style="width:300px; height:200px;" class="text-center" onClick='moveCenter(${mapInfo.latitude}, ${mapInfo.longitude})'>
+					<td class="text-start">
+					${mapInfo.title}
+					</td>
+					<td class="text-start">
+					<img src="${mapInfo.firstImage}" width=100px height=100px>
+					</td>
+					<td>${mapInfo.addr1} ${mapInfo.addr2}
+					</td>
+					<td>${mapInfo.tel}
+					</td>
+					<td class="lat" style="display: none;">${mapInfo.latitude }</td>
+					<td class="lon" style="display: none;">${mapInfo.longitude }</td>
+				</tr>
+ 			`;
+ 		});
+ 		document.querySelector("#resultTableBody").innerHTML = tbody;
+ 		initMakeMarkers()
+ 	}
+  
+  	</script>
+	<script type="text/javascript"
+		src="//dapi.kakao.com/v2/maps/sdk.js?appkey=97566674912f9bfa04d622bc54455adc"></script>
+	<script src="assets/js/map.js"></script>
+	<script>
+	var container = document.getElementById('map');
+	var options = {
+		center: new kakao.maps.LatLng(33.450701, 126.570667), 
+		level: 3
+	};
+	var map = new kakao.maps.Map(container, options); 
+	navigator.geolocation.getCurrentPosition(function(position) { 
+		var	lat = position.coords.latitude, // 위도 
+		lon = position.coords.longitude; // 경도 
+		var locLat = document.querySelector("#lat"); 
+		locLat.setAttribute("value", lat);
+		var locLon = document.querySelector("#lon"); 
+		locLon.setAttribute("value", lon);
+	});	
+	</script>
+</div>

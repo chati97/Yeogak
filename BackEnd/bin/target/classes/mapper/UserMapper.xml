@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.enjoytrip.general.model.mapper.UserMapper">
+    <resultMap type="userDto" id="user">
+        <result column="user_id" property="userId"/>
+        <result column="user_pw" property="userPw"/>
+        <result column="name" property="name"/>
+        <result column="email_id" property="emailId"/>
+        <result column="email_domain" property="emailDomain"/>
+        <result column="register_date" property="registerDate"/>
+        <result column="type" property="type"/>
+        <result column="sido" property="sido"/>
+        <result column="salt" property="salt"/>
+    </resultMap>
+
+    <insert id="joinUser" parameterType="userDto">
+        insert into User (`user_id`, `user_pw`, `name`, `email_id`, `email_domain`, `sido`, `salt`)
+        values (#{userId}, #{userPw}, #{name}, #{emailId}, #{emailDomain}, #{sido}, #{salt})
+    </insert>
+
+    <select id="loginUser" parameterType="string" resultMap="user">
+        select *
+        from User
+        where user_id=#{userId} and user_pw=#{userPw}
+    </select>
+
+    <select id="getUserInfo" parameterType="userDto" resultMap="user">
+        select *
+        from User
+        where user_id=#{userId}
+    </select>
+    
+    <update id="updateUser" parameterType="userDto">
+    	update User
+    	set `user_pw`=#{userPw}, `name`=#{name}, `email_id`=#{emailId}, `email_domain`=#{emailDomain}, `salt`=#{salt}
+    	where `user_id`=#{userId}
+    </update>
+    
+    <delete id="deleteUser" parameterType="userDto">
+    	delete from User
+    	where `user_id`=#{userId} and `user_pw`=#{userPw}
+    </delete>
+</mapper>

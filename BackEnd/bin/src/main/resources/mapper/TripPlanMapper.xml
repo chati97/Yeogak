@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.enjoytrip.tour.model.mapper.TripPlanMapper">
+<!-- 	<resultMap type="tripPlanDto" id="tripPlan"> -->
+<!--         <result column="id" property="id"/> -->
+<!--         <result column="user_id" property="userId"/> -->
+<!--         <result column="subject" property="subject"/> -->
+<!--         <result column="content" property="content"/> -->
+<!--         <result column="likes" property="likes"/> -->
+<!--         <result column="register_time" property="registerTime"/> -->
+<!--     </resultMap> -->
+    
+<!--     <resultMap type="tripPlanDto" id="ViewTripPlan" extends="tripPlan"> -->
+<!--     	<collection  property="attractions" column="id" javaType="list" ofType="infoDto" select="listInfo"/> -->
+<!--     </resultMap> -->
+    
+<!--     <resultMap type="infoDto" id="info"> -->
+<!--         <result column="user_id" property="userId"/> -->
+<!--         <result column="idx" property="idx"/> -->
+<!--         <result column="content_id" property="contentId" /> -->
+<!--     </resultMap> -->
+
+<!-- 	<insert id="writeTripPlan" parameterType="tripPlanDto"> -->
+<!-- 		insert into trip_plan (user_id, subject, content) -->
+<!-- 		values (#{userId}, #{subject}, #{content}) -->
+<!-- 		<selectKey resultType="int" keyProperty="plan_id" order="AFTER"> -->
+<!-- 			select last_insert_id() -->
+<!-- 		</selectKey> -->
+<!-- 	</insert> -->
+	
+<!-- 	<insert id="registAttractions" parameterType="tripPlanDto"> -->
+<!-- 		insert into (plan_id, attraction_id) -->
+<!-- 		<foreach collection="attractions" item="attraction" separator=" , "> -->
+<!-- 			(#{plan_id}, #{attraction.attraction_id}) -->
+<!-- 		</foreach> -->
+<!-- 	</insert> -->
+	
+<!-- 	<select id="listTripPlan" parameterType="map" resultMap="article"> -->
+<!-- 		select * -->
+<!-- 		from Trip_Plan -->
+<!-- 		where user_id = #{userId} -->
+<!-- 		order id desc -->
+<!-- 	</select> -->
+
+<!-- 	TripPlanDto viewTripPlan() throws SQLException; -->
+	
+<!-- 	int updateTripPlan(TripPlanDto tripPlanDto) throws SQLException; -->
+
+<!-- 	int deleteTripPlan(int planId) throws SQLException; -->
+	
+<!-- 	List<InfoDto> listInfo(int planId) throws SQLException; -->
+	
+	
+	
+</mapper>

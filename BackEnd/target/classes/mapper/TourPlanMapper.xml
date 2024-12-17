@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.enjoytrip.tour.model.mapper.TourPlanMapper">
+	<resultMap type="tourPlanDto" id="tourPlan">
+        <result column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="nickname" property="nickname"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="hit" property="hit"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="register_time" property="registerTime"/>
+        <result column="review_content" property="reviewContent"/>
+        <result column="review_register_time" property="reviewRegisterTime"/>
+    </resultMap>
+    
+    <resultMap type="infoDto" id="info">
+		<result column="content_id" property="contentId"/>
+		<result column="title" property="title"/>
+		<result column="addr1" property="addr1"/>
+		<result column="addr2" property="addr2"/>
+		<result column="tel" property="tel"/>
+		<result column="first_image" property="firstImage"/>
+		<result column="latitude" property="latitude"/>
+		<result column="longitude" property="longitude"/>
+		<result column="homepage" property="homepage"/>
+		<result column="overview" property="overview"/>
+		<result column="avg" property="ratingAvg"/>
+	</resultMap>
+    
+<!--     <resultMap type="tourPlanDto" id="ViewTourPlan" extends="tourPlan"> -->
+<!--     	<collection  property="attractions" column="id" javaType="list" ofType="infoDto" select="listInfo"/> -->
+<!--     </resultMap> -->
+    
+<!--     <resultMap type="infoDto" id="info"> -->
+<!--         <result column="user_id" property="userId"/> -->
+<!--         <result column="idx" property="idx"/> -->
+<!--         <result column="content_id" property="contentId" /> -->
+<!--     </resultMap> -->
+
+	<select id="listTourPlan" parameterType="map" resultMap="tourPlan">
+		select `id`, tp.user_id user_id, nickname, title, content, hit, start_time, end_time, tp.register_time register_time
+		from tour_plan tp join `user` u on tp.user_id = u.user_id
+		<if test="word != null">
+			where `title` like concat('%', #{word}, '%')
+		</if>
+		order by register_time desc
+	</select>
+
+	<insert id="writeTourPlan" parameterType="map">
+		insert into tour_plan (user_id, title, content, start_time, end_time)
+		values (#{userId}, #{title}, #{content}, #{startTime}, #{endTime})
+		<selectKey resultType="int" keyProperty="plan_id" order="AFTER">
+			select last_insert_id()
+		</selectKey>
+	</insert>
+	
+	<insert id="registAttractions" parameterType="list">
+		insert into Tour_Plan_Attraction (plan_id, content_id)
+		values
+		<foreach collection="tourList" item="idx" separator=" , ">
+			(#{plan_id}, #{idx})
+		</foreach>
+	</insert>
+	
+	<insert id="writeTourPlanReview" parameterType="map">
+		insert into tour_plan_review (`id`, `content`, register_time)
+		values (#{id}, #{reviewContent}, now())
+	</insert>
+	
+	<select id="getTourPlan" parameterType="int" resultMap="tourPlan">
+		select tp.id id, u.user_id user_id, `nickname`, `title`, tp.content content, `hit`, start_time, end_time, 
+				case when date_format(tp.register_time, '%Y%m%d') = date_format(now(), '%Y%m%d')
+				then date_format(tp.register_time, '%H:%i:%s')
+				else date_format(tp.register_time, '%y.%m.%d')
+				end `register_time`, tpr.content review_content, 
+				case when date_format(tpr.register_time, '%Y%m%d') = date_format(now(), '%Y%m%d')
+				then date_format(tpr.register_time, '%H:%i:%s')
+				else date_format(tpr.register_time, '%y.%m.%d')
+				end review_register_time
+		from tour_plan tp join `user` u on tp.user_id = u.user_id 
+			left join Tour_Plan_Review tpr on tp.id = tpr.id
+		where tp.id = #{id}
+	</select>
+	
+	<select id="getAttractionListByPlanId" parameterType="map" resultMap="info">
+		select *
+		from tour_plan_attraction t join attraction_info a using(content_id)
+		where t.plan_id = #{id}
+        order by idx;
+	</select>
+	
+	<update id="updateHit" parameterType="int">
+		update tour_plan set
+		`hit` = hit + 1
+		where `id`=#{id}
+	</update>
+	
+	<update id="updateTourPlan" parameterType="map">
+		update tour_plan 
+		set
+		`title`=#{title},`content`=#{content}, start_time=#{startTime}, end_time=#{endTime}
+		where `id`=#{id} and user_id=#{userId}
+	</update>
+	
+	<update id="updateTourPlanReview" parameterType="map">
+		update tour_plan_review 
+		set
+		`content`=#{reviewContent}
+		where `id`=#{id}
+	</update>
+	
+	<delete id="deleteTourPlan" parameterType="map">
+		delete from tour_plan
+		where id=#{id} and user_id=#{userId}
+	</delete>
+	
+<!-- 	<select id="listTourPlan" parameterType="map" resultMap="article"> -->
+<!-- 		select * -->
+<!-- 		from tour_Plan -->
+<!-- 		where user_id = #{userId} -->
+<!-- 		order id desc -->
+<!-- 	</select> -->	
+</mapper>

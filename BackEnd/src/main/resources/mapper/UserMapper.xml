@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.enjoytrip.general.model.mapper.UserMapper">
+    <resultMap type="userDto" id="user">
+        <result column="user_id" property="userId"/>
+        <result column="user_pw" property="userPw"/>
+        <result column="name" property="name"/>
+        <result column="nickname" property="nickname"/>
+        <result column="email_id" property="emailId"/>
+        <result column="email_domain" property="emailDomain"/>
+        <result column="register_time" property="registerTime"/>
+        <result column="type" property="type"/>
+        <result column="sido" property="sido"/>
+        <result column="birth_year" property="birthYear"/>
+        <result column="sex" property="sex"/>
+        <result column="salt" property="salt"/>
+        <result column="token" property="token" />
+    </resultMap>
+    
+    <select id="idCheck" parameterType="string" resultType="int">
+        select count(*)
+        from User
+        where user_id=#{userId}
+    </select>
+
+	<select id="nickCheck" parameterType="string" resultType="int">
+		select count(*)
+		from User
+		where nickname=#{nickname}
+	</select>
+
+    <insert id="joinUser" parameterType="userDto">
+        insert into User (`user_id`, `user_pw`, `name`, `nickname`, `email_id`, `email_domain`, `sido`, `salt`, `birth_year`, `sex`)
+        values (#{userId}, #{userPw}, #{name}, #{nickname}, #{emailId}, #{emailDomain}, #{sido}, #{salt}, #{birthYear}, #{sex})
+    </insert>
+
+    <select id="loginUser" parameterType="userDto" resultMap="user">
+        select `name`, `user_id`, email_id, email_domain
+        from User
+        where user_id=#{userId} and user_pw=#{userPw}
+    </select>
+
+    <select id="getUserInfo" parameterType="userDto" resultMap="user">
+        select `user_id`, `name`, `nickname`, `email_id`, `email_domain`, `register_time`, `type`, `sido`, `salt`, `birth_year`, `sex`
+        from User
+        where user_id=#{userId}
+    </select>
+    
+    <update id="updateUser" parameterType="userDto">
+    	update User
+    	set `name`=#{name}, `nickname`=#{nickname}, `email_id`=#{emailId}, `email_domain`=#{emailDomain}, `sido`=#{sido}
+    	where user_id=#{userId}
+    </update>
+    
+    <delete id="deleteUser" parameterType="userDto">
+    	delete from User
+    	where `user_id`=#{userId} and `user_pw`=#{userPw}
+    </delete>
+    
+    <update id="changePassword" parameterType="map">
+    	update User
+    	set `user_pw`=#{changePw}
+    	where `user_id`=#{userId} and `user_pw`=#{userPw}
+    </update>
+	
+	<select id="getRefreshToken" parameterType="string" resultType="string">
+		select token
+		from User
+		where user_id = #{userId}
+	</select>
+	
+	<update id="saveRefreshToken" parameterType="map">
+		update User
+		set token = #{token}
+		where user_id = #{userId}
+	</update>
+	
+	<update id="deleteRefreshToken" parameterType="map">
+		update User
+		set token = #{token, jdbcType=VARCHAR}
+		where user_id = #{userId}
+	</update>
+</mapper>

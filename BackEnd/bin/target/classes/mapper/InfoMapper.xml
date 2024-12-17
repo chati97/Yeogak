@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.enjoytrip.tour.model.mapper.InfoMapper">
+	<resultMap type="infoDto" id="info">
+		<result column="content_id" property="contentId"/>
+		<result column="title" property="title"/>
+		<result column="addr1" property="addr1"/>
+		<result column="addr2" property="addr2"/>
+		<result column="tel" property="tel"/>
+		<result column="first_image" property="firstImage"/>
+		<result column="latitude" property="latitude"/>
+		<result column="longitude" property="longitude"/>
+		<result column="homepage" property="homepage"/>
+		<result column="overview" property="overview"/>
+		<result column="avg" property="ratingAvg"/>
+	</resultMap>
+	
+	<!-- 조건에 맞는 모든 관광지 출력 -->
+	<select id="listInfo" parameterType="map" resultMap="info">
+		select i.content_id content_id, title, addr1, addr2, tel, first_image, latitude, longitude, homepage, overview
+		from attraction_info i join attraction_description d
+		using(content_id)
+		where i.sido_code=#{sidoCode}
+		<if test="word != null">
+			and `title` like concat('%', #{word}, '%')
+		</if>
+		<if test="attractionType != null">
+			and i.content_type_id in (
+			<foreach collection="attractionType" item="type" separator=" , ">
+				#{type}
+			</foreach>
+			)
+		</if>
+		order by content_id 
+	</select>
+	
+</mapper>

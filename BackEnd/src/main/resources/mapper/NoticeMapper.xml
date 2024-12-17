@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.enjoytrip.general.model.mapper.NoticeMapper">
+	<resultMap type="noticeDto" id="notice">
+		<result column="id" property="id"/>
+		<result column="user_id" property="userId"/>
+        <result column="nickname" property="nickname"/>
+		<result column="subject" property="subject"/>
+		<result column="content" property="content"/>
+		<result column="hit" property="hit"/>
+		<result column="register_time" property="registerTime"/>
+		<result column="need_to_notice" property="needToNotice"/>
+	</resultMap>
+	
+	<!-- 공지사항 작성 -->
+	<insert id="writeNotice" parameterType="noticeDto">
+		insert into Notice (`user_id`, `subject`, `content`)
+		values(#{userId}, #{subject}, #{content})
+	</insert>
+	
+	<!-- 공지사항 전체 조회 -->
+	<select id="listNotice" parameterType="string" resultMap="notice">
+		select `id`, `nickname`, `subject`, `content`, `hit`,
+				case when date_format(n.register_time, '%Y%m%d') = date_format(now(), '%Y%m%d')
+				then date_format(n.register_time, '%H:%i:%s')
+				else date_format(n.register_time, '%y.%m.%d')
+				end `register_time`, `need_to_notice`
+		from Notice n join User u where n.user_id = u.user_id
+		<if test="word != null and word != ''">
+				where ${key} like concat('%', #{word}, '%')
+		</if>
+		order by `id` desc
+		<!-- limit #{start}, #{spp} -->
+	</select>
+	
+	<!-- 공지사항 수정 -->
+	<update id="modifyNotice" parameterType="noticeDto">
+		update Notice
+		set `subject`=#{subject}, `content`=#{content}
+		where `id`=#{id}
+	</update>
+	
+	<!-- 공지사항 삭제 -->
+	<delete id="deleteNotice" parameterType="int">
+		delete from Notice
+		where id=#{id}
+	</delete>
+	
+	<select id="getNotice" parameterType="int" resultMap="notice">
+		select `id`, n.user_id user_id, `nickname`, `subject`, `content`, `hit`,
+				case when date_format(n.register_time, '%Y%m%d') = date_format(now(), '%Y%m%d')
+				then date_format(n.register_time, '%H:%i:%s')
+				else date_format(n.register_time, '%y.%m.%d')
+				end `register_time`
+		from Notice n join `user` u on n.user_id = u.user_id
+		where `id`=#{id}
+	</select>
+	
+	<update id="updateHit" parameterType="int">
+		update Notice set
+		`hit` = hit + 1
+		where `id`=#{id}
+	</update>
+</mapper>

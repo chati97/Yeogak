@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+	<div layout:fragment="content" class="content">
+	<main>
+	<div style="background-image: url(/assets/img/main2.jpg); background-size: cover; height:100vh"> 
+	<div style="height: 100px"></div>
+	 <div class="row justify-content-center" style="background-color: white; width: 80%; margin: auto">
+        <div class="col-lg-8 col-md-10 col-sm-12">
+          <h2 class="my-3 py-3 shadow-sm bg-light text-center">
+            <mark class="sky">글쓰기</mark>
+          </h2>
+        </div>
+        <div class="col-lg-8 col-md-10 col-sm-12" >
+          <div class="row align-self-center mb-2">
+          </div>
+           <table class="table table-hover">
+              <tr align="center">
+                <th scope="col">글번호</th>
+           		<td colspan="6" th:text="${article.id}"></td>
+          	  </tr>
+          	  <tr align="center">
+                <th scope="col">제목</th>
+           		<td colspan="6" th:text="${article.subject}"></td>
+         	  </tr>
+         	  <tr>
+           	  </tr>
+           	  <tr align="center">
+                <th scope="col">작성자</th>
+           		<td th:text="${article.userId}"></td>
+                <th scope="col">조회수</th>
+           		<td th:text="${article.hit}"></td>
+                <th scope="col">작성일</th>
+           		<td th:text="${article.registerTime}"></td>
+              </tr>
+              <tr align="center">
+              	<th scope="col">내용</th>
+              	<td colspan="6" th:text="${article.content}"></td>
+          	  </tr>
+          </table>
+          <div align="right">
+	          <a th:href="@{modify(id=${article.id})}" class="btn btn-primary">수정</a>
+	          <a href="list" class="btn btn-secondary">목록으로</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    </main>
+    </div>
+</html>

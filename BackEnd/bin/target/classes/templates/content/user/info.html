@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+	<div layout:fragment="content" class="content">
+	<main>
+	<div style="background-image: url(/assets/img/login1.PNG); background-size: cover; height:100vh"> 
+	<div style="height: 20%"></div>
+	 <div class="row justify-content-center" style="background-color: #ECF0F1; width: 50%; height: 50%; margin: auto; border-radius: 10px">
+        <div class="col-lg-8 col-md-10 col-sm-12">
+          <h2 class="my-3 py-3 shadow-sm bg-light text-center">
+            <mark class="sky">마이페이지</mark>
+          </h2>
+        </div>
+        <div th:if="${pwChk == null}" align="center">
+        	<form method="POST" action="/user/chk">
+	        	<h4>비밀번호를 입력하세요</h4>
+	        	<input type="password" name="passwordChk">
+	        	<button type="submit">로그인</button>
+        	</form>
+        </div>
+        <div th:if="${pwChk != null}" align="center">
+        	<form method="POST" action="" id="form-info">
+        		<table class="table table-striped w-auto">
+        			<tr>
+        				<th>유저 아이디</th>
+        				<td><input type="text" th:value="${userInfo.userId}" name="userId" readonly></td>
+        			</tr>
+        			<tr>
+        				<th>유저 비밀번호</th>
+        				<td><input type="password" th:value="${userInfo.userPw}" name="userPw" id="password"></td>
+        			</tr>
+        			<tr>
+        				<th>비밀번호 확인</th>
+        				<td><input type="password" id="chkPassword"></td>
+        			</tr>
+        			<tr>
+        				<th>유저명</th>
+        				<td><input type="text" th:value="${userInfo.name}" name="name"></td>
+        			</tr>
+        			<tr>
+        				<th>유저 이메일</th>
+        				<td><input type="text" th:value="${userInfo.emailId}" name="emailId">@<input type="text" th:value="${userInfo.emailDomain}" name="emailDomain"></td>
+        			</tr>
+        			
+        		</table>
+	       		<button type="button" class="btn btn-primary" id="btn-update">수정</button>
+	       		<button class="btn btn-danger" id="btn-delete">삭제</button>
+        	</form>
+        </div>
+    </div>
+    </div>
+    </main>
+    <script>
+    	document.querySelector("#btn-update").addEventListener("click", function(){
+    		let password = document.querySelector("#password");
+    		let chkPassword = document.querySelector("#chkPassword");
+    		if(password.value != chkPassword.value){
+    			alert("비밀번호가 일치하지 않습니다");
+    			chkPassword.focus();
+    		} else{    			
+	    		let form = document.querySelector("#form-info");
+	    		form.setAttribute("action", "modify");
+	    		form.submit();
+    		}
+    	});
+    	document.querySelector("#btn-delete").addEventListener("click", function(){
+    		if(window.confirm("탈퇴하시겠습니까?")){
+	    		let form = document.querySelector("#form-info");
+	    		form.setAttribute("action", "delete");
+	    		form.submit();    			
+    		}
+    	});
+    </script>
+    </div>
+</html>
